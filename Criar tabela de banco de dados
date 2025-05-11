@@ -1,0 +1,81 @@
+-- Criação do banco de dados
+CREATE DATABASE loja;
+USE loja;
+
+-- Tabela de Clientes
+CREATE TABLE clientes (
+    cliente_id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(14) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    telefone VARCHAR(15) NOT NULL,
+    endereco VARCHAR(200) NOT NULL,
+    data_cadastro DATE NOT NULL,
+    ativo BOOLEAN DEFAULT TRUE
+);
+
+-- Tabela de Produtos
+CREATE TABLE produtos (
+    produto_id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    preco DECIMAL(10,2) NOT NULL,
+    estoque INT NOT NULL,
+    categoria VARCHAR(50) NOT NULL,
+    data_cadastro DATE NOT NULL,
+    ativo BOOLEAN DEFAULT TRUE
+);
+
+-- Tabela de Pedidos
+CREATE TABLE pedidos (
+    pedido_id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    data_pedido DATETIME NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    valor_total DECIMAL(10,2) NOT NULL,
+    forma_pagamento VARCHAR(30) NOT NULL,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(cliente_id)
+);
+
+-- Tabela de Itens do Pedido
+CREATE TABLE itens_pedido (
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
+    pedido_id INT NOT NULL,
+    produto_id INT NOT NULL,
+    quantidade INT NOT NULL,
+    preco_unitario DECIMAL(10,2) NOT NULL,
+    subtotal DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(pedido_id),
+    FOREIGN KEY (produto_id) REFERENCES produtos(produto_id)
+);
+
+-- Inserindo dados de exemplo na tabela clientes
+INSERT INTO clientes (nome, cpf, email, telefone, endereco, data_cadastro, ativo) VALUES
+('João Silva', '123.456.789-01', 'joao@email.com', '(11) 9999-8888', 'Rua das Flores, 123 - São Paulo/SP', '2023-01-15', TRUE),
+('Maria Santos', '987.654.321-09', 'maria@email.com', '(21) 7777-6666', 'Av. Brasil, 456 - Rio de Janeiro/RJ', '2023-02-20', TRUE),
+('Carlos Oliveira', '456.789.123-45', 'carlos@email.com', '(31) 5555-4444', 'Rua dos Pinheiros, 789 - Belo Horizonte/MG', '2023-03-10', TRUE);
+
+-- Inserindo dados de exemplo na tabela produtos
+INSERT INTO produtos (nome, descricao, preco, estoque, categoria, data_cadastro, ativo) VALUES
+('Smartphone X', 'Smartphone com tela de 6.5 polegadas e 128GB de armazenamento', 2499.90, 50, 'Eletrônicos', '2023-01-05', TRUE),
+('Notebook Pro', 'Notebook com processador i7 e 16GB de RAM', 4599.90, 30, 'Eletrônicos', '2023-01-10', TRUE),
+('Mesa de Escritório', 'Mesa retangular em madeira maciça 140x70cm', 899.90, 20, 'Móveis', '2023-02-15', TRUE);
+
+-- Inserindo dados de exemplo na tabela pedidos
+INSERT INTO pedidos (cliente_id, data_pedido, status, valor_total, forma_pagamento) VALUES
+(1, '2023-04-01 10:30:00', 'Entregue', 2499.90, 'Cartão de Crédito'),
+(2, '2023-04-05 14:15:00', 'Processando', 5499.80, 'Boleto Bancário'),
+(3, '2023-04-10 09:45:00', 'Enviado', 899.90, 'PIX');
+
+-- Inserindo dados de exemplo na tabela itens_pedido
+INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco_unitario, subtotal) VALUES
+(1, 1, 1, 2499.90, 2499.90),
+(2, 2, 1, 4599.90, 4599.90),
+(2, 3, 1, 899.90, 899.90),
+(3, 3, 1, 899.90, 899.90);
+
+-- Consulta para verificar os dados
+SELECT * FROM clientes;
+SELECT * FROM produtos;
+SELECT * FROM pedidos;
+SELECT * FROM itens_pedido;
